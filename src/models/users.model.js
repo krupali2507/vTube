@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 
 const userSchema = mongoose.Schema(
   {
-    username: {
+    userName: {
       type: String,
       required: true,
       unique: true,
@@ -43,21 +43,21 @@ const userSchema = mongoose.Schema(
     },
     refreshToken: {
       type: String,
-      required: true,
     },
   },
   { timestamps: true }
 );
 
-const User = mongoose.model("User", userSchema);
-
 userSchema.pre("save", async function (next) {
+  console.log("calling this......");
   if (!this.isModified("password")) return next();
-  this.password = bcrypt.hash(this.password, 10);
+  this.password = await bcrypt.hash(this.password, 10);
   next();
 });
 
 userSchema.methods.isPasswordCorrect = async function (password) {
+  console.log("🚀 ~ password:", password);
+  console.log("calling this......");
   return await bcrypt.compare(password, this.password);
 };
 
@@ -80,5 +80,7 @@ userSchema.methods.genertaeRefreshToken = function () {
     expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
   });
 };
+
+const User = mongoose.model("User", userSchema);
 
 export default User;
