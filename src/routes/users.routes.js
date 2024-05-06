@@ -1,6 +1,6 @@
 import { Router } from "express";
 import express from "express";
-import { upload } from "../middlewares/index.js";
+import { upload, authenticate } from "../middlewares/index.js";
 import { userController } from "../controllers/index.js";
 
 const router = Router()
@@ -16,6 +16,7 @@ const router = Router()
     ]),
     userController.registerUser
   )
-  .post("/loginUser", userController.loginUser);
+  .post("/loginUser", userController.loginUser)
+  .post("/logout", authenticate, userController.logoutUser);
 
 export default router;

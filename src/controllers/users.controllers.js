@@ -6,6 +6,12 @@ const generateAccessandRefreshToken = async (user) => {
   try {
     const accessToken = await user.generateAccessToken();
     const refreshToken = await user.genertaeRefreshToken();
+
+    user.refreshToken = refreshToken;
+    console.log("🚀 ~ generateAccessandRefreshToken ~ user:", user);
+    user.save();
+    // user.save(); If anytime .save() only gives error of validation then we an use user.save({validateBeforeSave: false})
+
     return { accessToken, refreshToken };
   } catch (error) {
     throw new Error(
@@ -72,21 +78,57 @@ const loginUser = async (req, res) => {
     });
 
     const isPasswordValid = await user.isPasswordCorrect(password);
-
     if (!isPasswordValid) throw new Error("Invalid Credentials!");
     const { accessToken, refreshToken } = await generateAccessandRefreshToken(
       user
     );
-    res.status(200).send({ message: "User Login Successfully!" });
+
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+    res
+      .status(200)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", refreshToken, options)
+      .send({ message: "User Login Successfully!" });
   } catch (error) {
     res.status(400).send({ message: error.message });
+  }
+};
+
+const logoutUser = async (req, res) => {
+  try {
+    const { _id } = req.currentUser;
+    console.log("🚀 ~ logoutUser ~ _id:", _id);
+
+    const userData = await userModel.findByIdAndUpdate(
+      _id,
+      { $set: { refreshToken: undefined } },
+      { new: true }
+    );
+
+    console.log("🚀 ~ logoutUser ~ userData:", userData);
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+
+    res
+      .status(200)
+      .clearCookie("accessToken", options)
+      .clearCookie("refreshToken", options)
+      .send({ message: "User logggedOut successfully!" });
+  } catch (error) {
+    console.log("🚀 ~ logoutUser ~ error:", error);
+    res.status(400).send({ message: "Logout successfully!" });
   }
 };
 
 export default {
   registerUser,
   loginUser,
-  // logoutUser,
+  logoutUser,
   // refreshAccessToken,
   // changeCurrentPassword,
   // getCurrentUser,

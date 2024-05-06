@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 import { mongoDBConnect } from "./src/config/index.js";
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(
 
 app.use(morgan("dev"));
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 dotenv.config({
   path: "./.env",
