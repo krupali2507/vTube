@@ -17,6 +17,12 @@ const router = Router()
     userController.registerUser
   )
   .post("/loginUser", userController.loginUser)
-  .post("/logout", authenticate, userController.logoutUser);
+  .post("/logout", authenticate, userController.logoutUser)
+  .post("/refreshAccessToken", authenticate, userController.refreshAccessToken)
+  .post(
+    "/changeCurrentPassword",
+    authenticate,
+    userController.changeCurrentPassword
+  );
 
 export default router;

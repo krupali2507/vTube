@@ -1,6 +1,13 @@
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import { userModel } from "../models/index.js";
 import { userService } from "../services/index.js";
 import { uploadOnCloudinary } from "../utils/index.js";
+
+const cookieOptions = {
+  httpOnly: true,
+  secure: true,
+};
 
 const generateAccessandRefreshToken = async (user) => {
   try {
@@ -83,14 +90,10 @@ const loginUser = async (req, res) => {
       user
     );
 
-    const options = {
-      httpOnly: true,
-      secure: true,
-    };
     res
       .status(200)
-      .cookie("accessToken", accessToken, options)
-      .cookie("refreshToken", refreshToken, options)
+      .cookie("accessToken", accessToken, cookieOptions)
+      .cookie("refreshToken", refreshToken, cookieOptions)
       .send({ message: "User Login Successfully!" });
   } catch (error) {
     res.status(400).send({ message: error.message });
@@ -109,10 +112,6 @@ const logoutUser = async (req, res) => {
     );
 
     console.log("🚀 ~ logoutUser ~ userData:", userData);
-    const options = {
-      httpOnly: true,
-      secure: true,
-    };
 
     res
       .status(200)
@@ -125,12 +124,83 @@ const logoutUser = async (req, res) => {
   }
 };
 
+const refreshAccessToken = async (req, res) => {
+  try {
+    const incomingRefreshToken =
+      req.cookies.refreshToken || req.headers.refreshToken;
+
+    if (!incomingRefreshToken) throw new Error("Invalid Refresh Token!");
+
+    const decodedToken = jwt.verify(
+      incomingRefreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
+    console.log("🚀 ~ refreshAccessToken ~ decodedToken:", decodedToken);
+
+    const userData = await userService.findByIdQuery({ _id: decodedToken._id });
+
+    console.log("🚀 ~ refreshAccessToken ~ userData:", userData);
+    if (!userData) throw new Error("Invalid Refresh Token!");
+    if (incomingRefreshToken !== userData.refreshToken)
+      throw new Error("Refresh Token is Invalid or expired!");
+
+    const { accessToken, refreshToken } = await generateAccessandRefreshToken(
+      userData
+    );
+    console.log("🚀 ~ refreshAccessToken ~ refreshToken:", refreshToken);
+    console.log("🚀 ~ refreshAccessToken ~ accessToken:", accessToken);
+
+    res
+      .status(200)
+      .cookie("accessToken", accessToken, cookieOptions)
+      .cookie("refreshToken", refreshToken, cookieOptions)
+      .send({ message: "Access token refreshed!" });
+  } catch (error) {
+    console.log("🚀 ~ refreshAccessToken ~ error:", error);
+    res.status(400).send({
+      message:
+        error?.message || "Something went wrong while refreshing Access token!",
+    });
+  }
+};
+
+const changeCurrentPassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword, confirmNewPassword } = req.body;
+    const userData = req.currentUser;
+    console.log("🚀 ~ changeCurrentPassword ~ userData:", userData);
+
+    const isCurrentPasswordMatch = await bcrypt.compare(
+      userData.password,
+      currentPassword
+    );
+    console.log(
+      "🚀 ~ changeCurrentPassword ~ isCurrentPasswordMatch:",
+      isCurrentPasswordMatch
+    );
+    if (!isCurrentPasswordMatch) throw new Error("Current Password is wrong!");
+
+    if (currentPassword === newPassword)
+      throw new Error("New password can not be same as Old Password!");
+
+    if (newPassword !== confirmNewPassword)
+      throw new Error("Confirm new Password Do not match!");
+
+    res.status(200).send({ message: "Password changed successfully!" });
+  } catch (error) {
+    res.status(400).send({
+      message:
+        error?.message || "Something went wrong while changing your password!",
+    });
+  }
+};
+
 export default {
   registerUser,
   loginUser,
   logoutUser,
-  // refreshAccessToken,
-  // changeCurrentPassword,
+  refreshAccessToken,
+  changeCurrentPassword,
   // getCurrentUser,
   // updateAccountDetails,
   // updateUserAvatar,
