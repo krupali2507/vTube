@@ -170,8 +170,7 @@ const changeCurrentPassword = async (req, res) => {
     const userData = req.currentUser;
     console.log("🚀 ~ changeCurrentPassword ~ userData:", userData);
 
-    const isCurrentPasswordMatch = await bcrypt.compare(
-      userData.password,
+    const isCurrentPasswordMatch = await userData.isPasswordCorrect(
       currentPassword
     );
     console.log(
@@ -185,6 +184,10 @@ const changeCurrentPassword = async (req, res) => {
 
     if (newPassword !== confirmNewPassword)
       throw new Error("Confirm new Password Do not match!");
+
+    const updatePass = await userService.findByIdAndUpdateQuery(userData._id, {
+      password: newPassword,
+    });
 
     res.status(200).send({ message: "Password changed successfully!" });
   } catch (error) {
@@ -201,7 +204,7 @@ export default {
   logoutUser,
   refreshAccessToken,
   changeCurrentPassword,
-  // getCurrentUser,
+  // getCurrentUserInfo,
   // updateAccountDetails,
   // updateUserAvatar,
   // updateUserCoverImage,

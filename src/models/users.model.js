@@ -4,7 +4,8 @@ import bcrypt from "bcrypt";
 
 const userSchema = mongoose.Schema(
   {
-    userName:{      type: String,
+    userName: {
+      type: String,
       required: true,
       unique: true,
       lowercase: true,
@@ -50,6 +51,16 @@ const userSchema = mongoose.Schema(
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
+
+userSchema.pre("findOneAndUpdate", async function (next) {
+  const update = this.getUpdate();
+  console.log("update::", update);
+  // If the password field is in the update, hash it
+  if (update && update.password) {
+    update.password = await bcrypt.hash(update.password, 10);
+  }
   next();
 });
 

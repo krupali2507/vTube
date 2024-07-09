@@ -17,4 +17,14 @@ const insertOneQuery = async (payload) => {
   return saveInDB;
 };
 
-export default { findByIdQuery, findOneQuery, insertOneQuery };
+const findByIdAndUpdateQuery = async (id, update) => {
+  const updateData = await userModel.findByIdAndUpdate(id, update);
+  return updateData;
+};
+
+export default {
+  findByIdQuery,
+  findOneQuery,
+  insertOneQuery,
+  findByIdAndUpdateQuery,
+};
