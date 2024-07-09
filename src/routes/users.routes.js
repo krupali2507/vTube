@@ -18,7 +18,7 @@ const router = Router()
   )
   .post("/loginUser", userController.loginUser)
   .post("/logout", authenticate, userController.logoutUser)
-  .post("/refreshAccessToken", authenticate, userController.refreshAccessToken)
+  .post("/refreshAccessToken", userController.refreshAccessToken)
   .post(
     "/changeCurrentPassword",
     authenticate,

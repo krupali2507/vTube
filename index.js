@@ -37,6 +37,5 @@ mongoDBConnect()
 
 import { userRoutes } from "./src/routes/index.js";
 import { InternalLinks } from "./src/constants/index.js";
-import { userController } from "./src/controllers/index.js";
 
 app.use(InternalLinks.Users.BASE_URL, userRoutes);

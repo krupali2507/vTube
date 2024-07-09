@@ -76,7 +76,7 @@ const loginUser = async (req, res) => {
     const { email, userName, password } = req.body;
     console.log(email);
 
-    if (!userName && !email) {
+    if (!userName || !email) {
       throw new Error("username or email is required");
     }
 
@@ -107,7 +107,7 @@ const logoutUser = async (req, res) => {
 
     const userData = await userModel.findByIdAndUpdate(
       _id,
-      { $set: { refreshToken: undefined } },
+      { $unset: { refreshToken: "" } },
       { new: true }
     );
 
@@ -115,12 +115,12 @@ const logoutUser = async (req, res) => {
 
     res
       .status(200)
-      .clearCookie("accessToken", options)
-      .clearCookie("refreshToken", options)
+      .clearCookie("accessToken")
+      .clearCookie("refreshToken")
       .send({ message: "User logggedOut successfully!" });
   } catch (error) {
     console.log("🚀 ~ logoutUser ~ error:", error);
-    res.status(400).send({ message: "Logout successfully!" });
+    res.status(400).send({ message: error.message });
   }
 };
 
