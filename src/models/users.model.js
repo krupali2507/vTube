@@ -54,15 +54,15 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-userSchema.pre("findOneAndUpdate", async function (next) {
-  const update = this.getUpdate();
-  console.log("update::", update);
-  // If the password field is in the update, hash it
-  if (update && update.password) {
-    update.password = await bcrypt.hash(update.password, 10);
-  }
-  next();
-});
+// userSchema.pre("findOneAndUpdate", async function (next) {
+//   const update = this.getUpdate();
+//   console.log("update::", update);
+//   // If the password field is in the update, hash it
+//   if (update && update.password) {
+//     update.password = await bcrypt.hash(update.password, 10);
+//   }
+//   next();
+// });
 
 userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);

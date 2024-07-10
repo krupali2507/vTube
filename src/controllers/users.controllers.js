@@ -185,9 +185,9 @@ const changeCurrentPassword = async (req, res) => {
     if (newPassword !== confirmNewPassword)
       throw new Error("Confirm new Password Do not match!");
 
-    const updatePass = await userService.findByIdAndUpdateQuery(userData._id, {
-      password: newPassword,
-    });
+    userData.password = newPassword;
+
+    await userData.save();
 
     res.status(200).send({ message: "Password changed successfully!" });
   } catch (error) {
@@ -204,12 +204,10 @@ const getCurrentUserInfo = async (req, res) => {
       req.currentUser.toObject();
     console.log("userData:::", userData);
 
-    res
-      .status(200)
-      .send({
-        message: "Current user info fetched successfully",
-        data: userData,
-      });
+    res.status(200).send({
+      message: "Current user info fetched successfully",
+      data: userData,
+    });
   } catch (error) {
     res.status(400).send({ message: error.message || error });
   }
