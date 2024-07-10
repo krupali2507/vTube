@@ -1,14 +1,10 @@
 import mongoose from "mongoose";
 
-const commentSchema = mongoose.Schema(
+const tweetSchema = mongoose.Schema(
   {
     content: {
       type: String,
       required: true,
-    },
-    video: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Video",
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
@@ -18,6 +14,6 @@ const commentSchema = mongoose.Schema(
   { timestamps: true, versionKey: false }
 );
 
-const Comment = mongoose.model("Comment", commentSchema);
+const Tweet = mongoose.model("Tweet", tweetSchema);
 
-export default Comment;
+export default Tweet;
