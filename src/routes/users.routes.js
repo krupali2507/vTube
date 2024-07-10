@@ -23,6 +23,7 @@ const router = Router()
     "/changeCurrentPassword",
     authenticate,
     userController.changeCurrentPassword
-  );
+  )
+  .get("/getCurrentUserInfo", authenticate, userController.getCurrentUserInfo);
 
 export default router;

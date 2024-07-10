@@ -198,13 +198,30 @@ const changeCurrentPassword = async (req, res) => {
   }
 };
 
+const getCurrentUserInfo = async (req, res) => {
+  try {
+    const { password, createdAt, updatedAt, refreshToken, ...userData } =
+      req.currentUser.toObject();
+    console.log("userData:::", userData);
+
+    res
+      .status(200)
+      .send({
+        message: "Current user info fetched successfully",
+        data: userData,
+      });
+  } catch (error) {
+    res.status(400).send({ message: error.message || error });
+  }
+};
+
 export default {
   registerUser,
   loginUser,
   logoutUser,
   refreshAccessToken,
   changeCurrentPassword,
-  // getCurrentUserInfo,
+  getCurrentUserInfo,
   // updateAccountDetails,
   // updateUserAvatar,
   // updateUserCoverImage,

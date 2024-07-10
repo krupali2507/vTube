@@ -34,7 +34,7 @@ const videoSchema = mongoose.Schema(
       ref: "User",
     },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
 
 const Video = mongoose.model("Video", videoSchema);

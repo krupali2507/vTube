@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { version } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
@@ -45,7 +45,7 @@ const userSchema = mongoose.Schema(
       type: String,
     },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
 
 userSchema.pre("save", async function (next) {
