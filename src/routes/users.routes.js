@@ -24,6 +24,12 @@ const router = Router()
     authenticate,
     userController.changeCurrentPassword
   )
-  .get("/getCurrentUserInfo", authenticate, userController.getCurrentUserInfo);
+  .get("/getCurrentUserInfo", authenticate, userController.getCurrentUserInfo)
+  .post(
+    "/updateUserAvatar",
+    authenticate,
+    upload.fields([{ name: "avatar" }, { name: "coverImage" }]),
+    userController.updateUserAvatar
+  );
 
 export default router;

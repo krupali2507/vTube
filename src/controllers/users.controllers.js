@@ -213,6 +213,26 @@ const getCurrentUserInfo = async (req, res) => {
   }
 };
 
+const updateUserAvatar = async (req, res) => {
+  try {
+    const avatarImageLocalPath = req.files?.avatar?.[0]?.path;
+    const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
+
+    const avatarImageUrl = await uploadOnCloudinary(avatarImageLocalPath);
+    const coverImageUrl = await uploadOnCloudinary(coverImageLocalPath);
+
+    await userService.findByIdAndUpdateQuery(req.currentUser?._id, {
+      avatar: avatarImageUrl,
+      coverImage: coverImageUrl,
+    });
+
+    res.status(200).send({ message: "Image updated successfully!" });
+  } catch (error) {
+    console.log("🚀 ~ updateUserAvatar ~ error:", error);
+    res.status(400).send({ message: error.message || error });
+  }
+};
+
 export default {
   registerUser,
   loginUser,
@@ -221,7 +241,7 @@ export default {
   changeCurrentPassword,
   getCurrentUserInfo,
   // updateAccountDetails,
-  // updateUserAvatar,
+  updateUserAvatar,
   // updateUserCoverImage,
   // getUserChannelProfile,
   // getWatchHistory

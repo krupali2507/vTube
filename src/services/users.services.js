@@ -18,7 +18,9 @@ const insertOneQuery = async (payload) => {
 };
 
 const findByIdAndUpdateQuery = async (id, update) => {
-  const updateData = await userModel.findByIdAndUpdate(id, update);
+  const updateData = await userModel.findByIdAndUpdate(id, update, {
+    new: true,
+  });
   return updateData;
 };
 
