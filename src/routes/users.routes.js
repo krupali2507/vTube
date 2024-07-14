@@ -30,6 +30,11 @@ const router = Router()
     authenticate,
     upload.fields([{ name: "avatar" }, { name: "coverImage" }]),
     userController.updateUserAvatar
+  )
+  .get(
+    "/getUserChannelProfile/:userName",
+    authenticate,
+    userController.getUserChannelProfile
   );
 
 export default router;

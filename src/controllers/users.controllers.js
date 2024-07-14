@@ -107,7 +107,7 @@ const logoutUser = async (req, res) => {
 
     const userData = await userModel.findByIdAndUpdate(
       _id,
-      { $unset: { refreshToken: "" } },
+      { $unset: { refreshToken: 1 } },
       { new: true }
     );
 
@@ -218,6 +218,9 @@ const updateUserAvatar = async (req, res) => {
     const avatarImageLocalPath = req.files?.avatar?.[0]?.path;
     const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
 
+    if (!avatarImageLocalPath) throw new Error("Avatar file is missing!");
+    if (!coverImageLocalPath) throw new Error("Cover Image is missing!");
+
     const avatarImageUrl = await uploadOnCloudinary(avatarImageLocalPath);
     const coverImageUrl = await uploadOnCloudinary(coverImageLocalPath);
 
@@ -233,6 +236,32 @@ const updateUserAvatar = async (req, res) => {
   }
 };
 
+const getUserChannelProfile = async (req, res) => {
+  try {
+    let { userName } = req.params;
+    let userId = req.currentUser?._id;
+    console.log("🚀 ~ getUserChannelProfile ~ userName", userName);
+    if (!userName.trim())
+      throw new Error("username required to fetch user details!");
+
+    const userChannelData = await userService.findAggregateQuery(
+      { userName },
+      userId
+    );
+    // console.log(
+    //   "🚀 ~ getUserChannelProfile ~ userChannelData:",
+    //   userChannelData
+    // );
+    res.status(200).send({
+      message: "User Profile Data fetched successfully!",
+      data: userChannelData,
+    });
+  } catch (error) {
+    console.log("🚀 ~ getUserChannelProfile ~ error:", error);
+    res.status(400).send({ message: error.message || error });
+  }
+};
+
 export default {
   registerUser,
   loginUser,
@@ -243,6 +272,6 @@ export default {
   // updateAccountDetails,
   updateUserAvatar,
   // updateUserCoverImage,
-  // getUserChannelProfile,
+  getUserChannelProfile,
   // getWatchHistory
 };
