@@ -51,8 +51,10 @@ const registerUser = async (req, res) => {
     let avtarImageLocalPath = req.files?.avatar?.[0]?.path;
     let coverImageLocalPath = req.files?.coverImage?.[0]?.path;
 
-    const avatarURL = await uploadOnCloudinary(avtarImageLocalPath);
-    const coverImageURL = await uploadOnCloudinary(coverImageLocalPath);
+    const { URL: avatarURL } = await uploadOnCloudinary(avtarImageLocalPath);
+    const { URL: coverImageURL } = await uploadOnCloudinary(
+      coverImageLocalPath
+    );
 
     let newUser = await userService.insertOneQuery({
       userName,

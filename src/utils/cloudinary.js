@@ -15,10 +15,8 @@ const uploadOnCloudinary = async (localImgUrl) => {
       resource_type: "auto",
     });
 
-    console.log("uploadFileData:::", uploadFileData.url);
-
     fs.unlinkSync(localImgUrl);
-    return uploadFileData.url;
+    return { URL: uploadFileData.url, Duration: uploadFileData.duration };
   } catch (error) {
     fs.unlinkSync(localImgUrl);
     throw new Error("Upload to cloudinary operation gets failed!");

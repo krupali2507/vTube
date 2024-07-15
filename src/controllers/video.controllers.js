@@ -1,3 +1,4 @@
+import { videoService } from "../services/index.js";
 import { uploadOnCloudinary } from "../utils/index.js";
 
 const postVideo = async (req, res) => {
@@ -8,11 +9,23 @@ const postVideo = async (req, res) => {
     const videoUrl = req.files?.video?.[0]?.path;
     if (!videoUrl) throw new Error("Please select video to upload!");
 
-    const videoLinkUrl = await uploadOnCloudinary(videoUrl);
-    console.log("🚀 ~ postVideo ~ videoLinkUrl:", videoLinkUrl);
+    const { URL, Duration } = await uploadOnCloudinary(videoUrl);
+    const newVideoObj = {
+      title,
+      description,
+      duration: Duration,
+      videoFile: URL,
+      owner: req.currentUser._id,
+    };
 
-    res.status(200).send({ message: "Video uploaded successfully!" });
+    const saveVideo = await videoService.insertOneQuery(newVideoObj);
+
+    res.status(200).send({
+      message: "Video uploaded successfully!",
+      data: { videoId: saveVideo._id },
+    });
   } catch (error) {
+    console.log("🚀 ~ postVideo ~ error:", error);
     res.status(400).send({ message: error.message || message });
   }
 };
@@ -43,6 +56,18 @@ const updateVideo = async (req, res) => {
 
 const deleteVideo = async (req, res) => {
   try {
+    const { videoId } = req.params;
+    if (!videoId) throw new Error("VideoId is required to delete the video!");
+
+    const videoData = await videoService.findOneQuery(
+      { _id: videoId },
+      { _id: 1 }
+    );
+
+    if (!videoData)
+      throw new Error("No video available with associated videoId!");
+    await videoService.deleteOneQuery({ _id: videoId });
+
     res.status(200).send({ message: "Video deleted successfully!" });
   } catch (error) {
     res.status(400).send({ message: error.message || message });
