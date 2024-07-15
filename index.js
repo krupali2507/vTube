@@ -35,7 +35,8 @@ mongoDBConnect()
     console.log(`MongoDB connection failed!`);
   });
 
-import { userRoutes } from "./src/routes/index.js";
+import { userRoutes, videoRoutes } from "./src/routes/index.js";
 import { InternalLinks } from "./src/constants/index.js";
 
 app.use(InternalLinks.Users.BASE_URL, userRoutes);
+app.use(InternalLinks.Videos.BASE_URL, videoRoutes);

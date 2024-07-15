@@ -1,5 +1,4 @@
 import { Router } from "express";
-import express from "express";
 import { upload, authenticate } from "../middlewares/index.js";
 import { userController } from "../controllers/index.js";
 
