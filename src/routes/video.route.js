@@ -9,6 +9,7 @@ const router = Router()
     upload.fields([{ name: "video" }]),
     videoController.postVideo
   )
+  .post("/updateVideo/:videoId", authenticate, videoController.updateVideo)
   .delete("/deleteVideo/:videoId", authenticate, videoController.deleteVideo);
 
 export default router;

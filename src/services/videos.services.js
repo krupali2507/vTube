@@ -11,9 +11,14 @@ const insertOneQuery = async (data) => {
   return saveData;
 };
 
+const updateOneQuery = async (filter, update) => {
+  const updatedData = await videoModel.updateOne(filter, update, { new: true });
+  return updatedData;
+};
+
 const deleteOneQuery = async (query) => {
   const deleteData = await videoModel.deleteOne(query);
   return deleteData;
 };
 
-export default { findOneQuery, insertOneQuery, deleteOneQuery };
+export default { findOneQuery, insertOneQuery, updateOneQuery, deleteOneQuery };

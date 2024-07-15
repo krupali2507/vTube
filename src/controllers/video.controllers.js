@@ -48,6 +48,23 @@ const getVideoById = async (req, res) => {
 
 const updateVideo = async (req, res) => {
   try {
+    const { videoId } = req.params;
+    if (!videoId) throw new Error("VideoId is required to update the video!");
+
+    const { title, description, thumbnail } = req.body;
+
+    const videoData = await videoService.findOneQuery(
+      { _id: videoId },
+      { _id: 1 }
+    );
+    if (!videoData)
+      throw new Error("No video available with associated videoId!");
+
+    const updatedData = await videoService.updateOneQuery(
+      { _id: videoId },
+      { title, description, thumbnail }
+    );
+
     res.status(200).send({ message: "Video updated successfully!" });
   } catch (error) {
     res.status(400).send({ message: error.message || message });
