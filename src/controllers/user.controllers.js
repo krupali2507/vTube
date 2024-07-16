@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
 import { userModel } from "../models/index.js";
 import { userService } from "../services/index.js";
 import { uploadOnCloudinary } from "../utils/index.js";

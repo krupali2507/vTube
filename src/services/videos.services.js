@@ -1,6 +1,6 @@
 import { videoModel } from "../models/index.js";
 
-const findOneQuery = async (filter, projection) => {
+const findByIdQuery = async (filter, projection) => {
   const data = await videoModel.findById(filter, projection);
   return data;
 };
@@ -34,7 +34,7 @@ const deleteOneQuery = async (query) => {
 };
 
 export default {
-  findOneQuery,
+  findByIdQuery,
   findAllQuery,
   insertOneQuery,
   updateOneQuery,

@@ -8,4 +8,7 @@ export default {
   Videos: {
     BASE_URL: "/api/v1/videos",
   },
+  Playlists: {
+    BASE_URL: "/api/v1/playlist",
+  },
 };

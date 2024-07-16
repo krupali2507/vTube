@@ -73,7 +73,7 @@ const getVideoById = async (req, res) => {
     const { videoId } = req.params;
     if (!videoId) throw new Error("Please provide videoId!");
 
-    const videoData = await videoService.findOneQuery(
+    const videoData = await videoService.findByIdQuery(
       { _id: videoId },
       { updateedAt: 0 }
     );
@@ -95,7 +95,7 @@ const updateVideo = async (req, res) => {
 
     const { title, description, thumbnail } = req.body;
 
-    const videoData = await videoService.findOneQuery(
+    const videoData = await videoService.findByIdQuery(
       { _id: videoId },
       { _id: 1 }
     );
@@ -118,7 +118,7 @@ const deleteVideo = async (req, res) => {
     const { videoId } = req.params;
     if (!videoId) throw new Error("VideoId is required to delete the video!");
 
-    const videoData = await videoService.findOneQuery(
+    const videoData = await videoService.findByIdQuery(
       { _id: videoId },
       { _id: 1 }
     );
@@ -139,7 +139,7 @@ const togglePublishStatus = async (req, res) => {
     if (!videoId)
       throw new Error("VideoId is required to change the publish status!");
 
-    const videoData = await videoService.findOneQuery(
+    const videoData = await videoService.findByIdQuery(
       { _id: videoId },
       { _id: 1, isPublished: 1 }
     );
