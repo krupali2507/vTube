@@ -22,7 +22,9 @@ const insertOneQuery = async (data) => {
 };
 
 const updateOneQuery = async (filter, update) => {
-  const updatedData = await videoModel.updateOne(filter, update, { new: true });
+  const updatedData = await videoModel.findByIdAndUpdate(filter, update, {
+    new: true,
+  });
   return updatedData;
 };
 

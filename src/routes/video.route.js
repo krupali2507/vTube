@@ -11,7 +11,11 @@ const router = Router()
   )
   .get("/:videoId", authenticate, videoController.getVideoById)
   .get("/getAllVideos", authenticate, videoController.getAllVideos)
-  .post("/toggleVideoStatus", authenticate, videoController.togglePublishStatus)
+  .post(
+    "/toggleVideoStatus/:videoId",
+    authenticate,
+    videoController.togglePublishStatus
+  )
   .post("/updateVideo/:videoId", authenticate, videoController.updateVideo)
   .delete("/deleteVideo/:videoId", authenticate, videoController.deleteVideo);
 

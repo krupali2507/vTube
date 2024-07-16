@@ -71,7 +71,18 @@ const getAllVideos = async (req, res) => {
 const getVideoById = async (req, res) => {
   try {
     const { videoId } = req.params;
-    res.status(200).send({ message: "Video fetch successfully!" });
+    if (!videoId) throw new Error("Please provide videoId!");
+
+    const videoData = await videoService.findOneQuery(
+      { _id: videoId },
+      { updateedAt: 0 }
+    );
+    if (!videoData)
+      throw new Error("No video Data available for provided videoId!");
+
+    res
+      .status(200)
+      .send({ message: "Video fetch successfully!", data: videoData });
   } catch (error) {
     res.status(400).send({ message: error.message || message });
   }
@@ -125,7 +136,25 @@ const deleteVideo = async (req, res) => {
 const togglePublishStatus = async (req, res) => {
   try {
     const { videoId } = req.params;
-    res.status(200).send({ message: "Video status changed successfully!" });
+    if (!videoId)
+      throw new Error("VideoId is required to change the publish status!");
+
+    const videoData = await videoService.findOneQuery(
+      { _id: videoId },
+      { _id: 1, isPublished: 1 }
+    );
+    if (!videoData)
+      throw new Error("No video available with associated videoId!");
+
+    const updateToggleStatus = await videoService.updateOneQuery(
+      { _id: videoId },
+      { isPublished: !videoData.isPublished }
+    );
+
+    res.status(200).send({
+      message: "Video status changed successfully!",
+      data: updateToggleStatus,
+    });
   } catch (error) {
     res.status(400).send({ message: error.message || message });
   }
