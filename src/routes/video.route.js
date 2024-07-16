@@ -9,6 +9,9 @@ const router = Router()
     upload.fields([{ name: "video" }]),
     videoController.postVideo
   )
+  .get("/:videoId", authenticate, videoController.getVideoById)
+  .get("/getAllVideos", authenticate, videoController.getAllVideos)
+  .post("/toggleVideoStatus", authenticate, videoController.togglePublishStatus)
   .post("/updateVideo/:videoId", authenticate, videoController.updateVideo)
   .delete("/deleteVideo/:videoId", authenticate, videoController.deleteVideo);
 

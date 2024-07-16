@@ -5,6 +5,16 @@ const findOneQuery = async (filter, projection) => {
   return data;
 };
 
+const findAllQuery = async (filter, Query, projection) => {
+  const { limit, skip, sortBy } = Query;
+  const data = await videoModel
+    .find(filter, projection)
+    .sort(sortBy)
+    .skip(skip)
+    .limit(limit);
+  return data;
+};
+
 const insertOneQuery = async (data) => {
   const newObj = new videoModel(data);
   const saveData = await newObj.save();
@@ -21,4 +31,10 @@ const deleteOneQuery = async (query) => {
   return deleteData;
 };
 
-export default { findOneQuery, insertOneQuery, updateOneQuery, deleteOneQuery };
+export default {
+  findOneQuery,
+  findAllQuery,
+  insertOneQuery,
+  updateOneQuery,
+  deleteOneQuery,
+};

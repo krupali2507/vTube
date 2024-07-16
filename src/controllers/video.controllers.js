@@ -32,7 +32,37 @@ const postVideo = async (req, res) => {
 
 const getAllVideos = async (req, res) => {
   try {
-    res.status(200).send({ message: "Videos fetched successfully!" });
+    const {
+      page = 1,
+      limit = 10,
+      query,
+      sortBy = "createdAt",
+      sortType = 1,
+    } = req.query;
+    const { _id } = req.currentUser;
+
+    const allVideos = await videoService.findAllQuery(
+      { owner: _id },
+      {
+        limit,
+        skip: (page - 1) * limit,
+        sortBy: { [sortBy]: Number(sortType) },
+      },
+      {
+        title: 1,
+        description: 1,
+        thumbnail: 1,
+        videoFile: 1,
+        duration: 1,
+        views: 1,
+        isPublished: 1,
+        createdAt: 1,
+      }
+    );
+
+    res
+      .status(200)
+      .send({ message: "Videos fetched successfully!", data: allVideos });
   } catch (error) {
     res.status(400).send({ message: error.message || message });
   }
@@ -40,6 +70,7 @@ const getAllVideos = async (req, res) => {
 
 const getVideoById = async (req, res) => {
   try {
+    const { videoId } = req.params;
     res.status(200).send({ message: "Video fetch successfully!" });
   } catch (error) {
     res.status(400).send({ message: error.message || message });
@@ -93,6 +124,7 @@ const deleteVideo = async (req, res) => {
 
 const togglePublishStatus = async (req, res) => {
   try {
+    const { videoId } = req.params;
     res.status(200).send({ message: "Video status changed successfully!" });
   } catch (error) {
     res.status(400).send({ message: error.message || message });
