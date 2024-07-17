@@ -5,11 +5,12 @@ const verifyJWT = async (req, res, next) => {
   try {
     const token = req.cookies?.accessToken;
     console.log("🚀 ~ verifyJWT ~ token:", token);
-    if (!token) throw new Error("Not a valid User!");
+    if (!token) throw new Error("Not a valid token!");
     const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
     console.log("🚀 ~ verifyJWT ~ decodedToken:", decodedToken);
     const userData = await userModel.findById(decodedToken._id);
     console.log("🚀 ~ verifyJWT ~ userData:", userData);
+    if (!userData) throw new Error("Not a valid user!");
 
     req.currentUser = userData;
     next();

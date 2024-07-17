@@ -23,7 +23,15 @@ const findByIdAndUpdateQuery = async (id, update) => {
   return updateData;
 };
 
-const findAggregateQuery = async (filter, userId) => {};
+const findAggregateQuery = async (filter, userId) => {
+  const playlistData = await playlistModel.find({});
+  return playlistData;
+};
+
+const deleteOneQuery = async (filter) => {
+  const deleteData = await playlistModel.deleteOne(filter);
+  return deleteData;
+};
 
 export default {
   findByIdQuery,
@@ -31,4 +39,5 @@ export default {
   insertOneQuery,
   findByIdAndUpdateQuery,
   findAggregateQuery,
+  deleteOneQuery,
 };
