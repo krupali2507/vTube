@@ -222,8 +222,12 @@ const updateUserAvatar = async (req, res) => {
     if (!avatarImageLocalPath) throw new Error("Avatar file is missing!");
     if (!coverImageLocalPath) throw new Error("Cover Image is missing!");
 
-    const avatarImageUrl = await uploadOnCloudinary(avatarImageLocalPath);
-    const coverImageUrl = await uploadOnCloudinary(coverImageLocalPath);
+    const { URL: avatarImageUrl } = await uploadOnCloudinary(
+      avatarImageLocalPath
+    );
+    const { URL: coverImageUrl } = await uploadOnCloudinary(
+      coverImageLocalPath
+    );
 
     await userService.findByIdAndUpdateQuery(req.currentUser?._id, {
       avatar: avatarImageUrl,
